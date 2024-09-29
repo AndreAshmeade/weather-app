@@ -4,8 +4,8 @@ const API_KEY = "ec630aebe4f1475bbca234120232608";
 
 searchSect.innerHTML = `
 <header>
-  <form class="search-bar">
-    <input id="search"  type"submit" class="input" placeholder="search location" />
+  <form class="search-bar" id="search-form">
+    <input id="search"  type"text"  placeholder="search location"/>
 	</form>
 </header>
 
@@ -15,20 +15,31 @@ searchSect.innerHTML = `
 </main>
 `;
 
-fetch(
-	`http://api.weatherapi.com/v1/current.json?key=ec630aebe4f1475bbca234120232608&q=New Jersey}`
-)
-	.then((response) => {
-		if (response.ok) {
-			return response.json();
-		} else {
-			throw new Error("NETWORK RESPONSE ERROR");
+document
+	.getElementById("search")
+	.addEventListener("keypress", function (event) {
+		if (event.key === "Enter") {
+			event.preventDefault(); //Prevent the default form submission
+
+			const searchTerm = this.value;
+
+
+			fetch(
+				`http://api.weatherapi.com/v1/current.json?key=ec630aebe4f1475bbca234120232608&q=${encodeURIComponent(searchTerm)}`
+			)
+				.then((response) => {
+					if (response.ok) {
+						return response.json();
+					} else {
+						throw new Error("NETWORK RESPONSE ERROR");
+					}
+				})
+				.then((data) => {
+					return renderWeatherData(data);
+				})
+				.catch((error) => console.error("FETCH ERROR:", error));
 		}
-	})
-	.then((data) => {
-		return renderWeatherData(data);
-	})
-	.catch((error) => console.error("FETCH ERROR:", error));
+	});
 
 const renderWeatherData = (data) => {
 	weatherSect.innerHTML = `
