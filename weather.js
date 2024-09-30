@@ -58,9 +58,11 @@ document
 			event.preventDefault(); //Prevent the default form submission
 
 			const searchTerm = this.value;
+			//Enter API Key
+			const API_KEY = "";
 
 			fetch(
-				`http://api.weatherapi.com/v1/forecast.json?key=ec630aebe4f1475bbca234120232608&q=${encodeURIComponent(searchTerm)}&days=3`
+				`http://api.weatherapi.com/v1/forecast.json?key=${encodeURIComponent(API_KEY)}&q=${encodeURIComponent(searchTerm)}&days=3`
 			)
 				.then((response) => {
 					if (response.ok) {
