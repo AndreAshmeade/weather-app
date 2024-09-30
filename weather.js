@@ -15,6 +15,42 @@ searchSect.innerHTML = `
 </main>
 `;
 
+if ("geolocation" in navigator) {
+	navigator.geolocation.getCurrentPosition(
+		(position) => {
+			const latitude = position.coords.latitude;
+			const longitude = position.coords.longitude;
+			const currentlocation = `${latitude},${longitude}`;
+
+			fetch(
+				`http://api.weatherapi.com/v1/forecast.json?key=ec630aebe4f1475bbca234120232608&q=${encodeURIComponent(currentlocation)}&days=3`
+			)
+				.then((response) => {
+					if (response.ok) {
+						return response.json();
+					} else {
+						throw new Error("NETWORK RESPONSE ERROR");
+					}
+				})
+				.then((data) => {
+					console.log(data);
+					return renderWeatherData(data);
+				})
+				.catch((error) => console.error("FETCH ERROR:", error));
+		},
+		(error) => {
+			console.error(`Error occurred: ${error.message}`);
+		},
+		{
+			enableHighAccuracy: true,
+			timeout: 5000,
+			maximumAge: 0,
+		}
+	);
+} else {
+	console.error("Geolocation is not supported by this browser.");
+}
+
 document
 	.getElementById("search")
 	.addEventListener("keypress", function (event) {
@@ -22,18 +58,19 @@ document
 			event.preventDefault(); //Prevent the default form submission
 
 			const searchTerm = this.value;
+
 			fetch(
 				`http://api.weatherapi.com/v1/forecast.json?key=ec630aebe4f1475bbca234120232608&q=${encodeURIComponent(searchTerm)}&days=3`
 			)
 				.then((response) => {
 					if (response.ok) {
-					return response.json();
+						return response.json();
 					} else {
 						throw new Error("NETWORK RESPONSE ERROR");
 					}
 				})
 				.then((data) => {
-				  console.log(data);
+					console.log(data);
 					return renderWeatherData(data);
 				})
 				.catch((error) => console.error("FETCH ERROR:", error));
@@ -41,13 +78,11 @@ document
 	});
 
 const formatDate = (inputDate) => {
- const [year, month, day] = inputDate.split('-');
- return `${day}-${month}-${year}`;
+	const [year, month, day] = inputDate.split("-");
+	return `${day}-${month}-${year}`;
 };
 
-
 const renderWeatherData = (data) => {
-
 	const locationName = data.location.name;
 
 	const dateOne = formatDate(data.forecast.forecastday[0].date);
@@ -56,20 +91,19 @@ const renderWeatherData = (data) => {
 	const rainDayOne = data.forecast.forecastday[0].hour[0].precip_in;
 	const windDayOne = data.forecast.forecastday[0].hour[0].windchill_f;
 
-  const dateTwo = formatDate( data.forecast.forecastday[1].date);
+	const dateTwo = formatDate(data.forecast.forecastday[1].date);
 	const tempDayTwo = data.forecast.forecastday[1].hour[1].temp_f;
 	const iconDayTwo = data.forecast.forecastday[1].hour[1].condition.icon;
 	const rainDayTwo = data.forecast.forecastday[1].hour[1].precip_in;
 	const windDayTwo = data.forecast.forecastday[1].hour[1].windchill_f;
 
-  const dateThree = formatDate( data.forecast.forecastday[2].date);
+	const dateThree = formatDate(data.forecast.forecastday[2].date);
 	const tempDayThree = data.forecast.forecastday[2].hour[2].temp_f;
 	const iconDayThree = data.forecast.forecastday[2].hour[2].condition.icon;
 	const rainDayThree = data.forecast.forecastday[2].hour[2].precip_in;
 	const windDayThree = data.forecast.forecastday[2].hour[2].windchill_f;
 
-
-weatherSect.innerHTML = `
+	weatherSect.innerHTML = `
 
 
 <h1>${dateOne}</h1>
