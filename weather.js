@@ -1,6 +1,7 @@
 const searchSect = document.getElementById("searchSect");
 const weatherSect = document.getElementById("weatherSect");
-const API_KEY = "ec630aebe4f1475bbca234120232608";
+//enter personal API_KEY
+const API_KEY = "";
 
 searchSect.innerHTML = `
 <header>
@@ -23,7 +24,7 @@ if ("geolocation" in navigator) {
 			const currentlocation = `${latitude},${longitude}`;
 
 			fetch(
-				`http://api.weatherapi.com/v1/forecast.json?key=ec630aebe4f1475bbca234120232608&q=${encodeURIComponent(currentlocation)}&days=3`
+				`http://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${encodeURIComponent(currentlocation)}&days=3`
 			)
 				.then((response) => {
 					if (response.ok) {
@@ -58,9 +59,6 @@ document
 			event.preventDefault(); //Prevent the default form submission
 
 			const searchTerm = this.value;
-			//Enter API Key
-			const API_KEY = "";
-
 			fetch(
 				`http://api.weatherapi.com/v1/forecast.json?key=${encodeURIComponent(API_KEY)}&q=${encodeURIComponent(searchTerm)}&days=3`
 			)
